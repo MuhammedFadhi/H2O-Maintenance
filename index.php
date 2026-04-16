@@ -2,17 +2,17 @@
 require_once 'config.php';
 
 // Capture from URL and store in Session if present (from QR scan)
-if (isset($_GET['pid'])) {
-  $_SESSION['pending_pid'] = $_GET['pid'];
-  $_SESSION['pending_type'] = substr($_GET['pid'], 0, 4);
-}
-
-$pid = $_SESSION['pending_pid'] ?? '';
-$type = $_SESSION['pending_type'] ?? '';
+// Use GET parameter directly to avoid "sticky" session issues
+$pid = $_GET['pid'] ?? '';
+$type = $pid ? substr($pid, 0, 4) : '';
 
 // Redirect to dashboard if logged in and NO pending product to claim
 if (isset($_SESSION['user_id']) && !$pid) {
-  header("Location: dashboard.php");
+  if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+    header("Location: admin.php");
+  } else {
+    header("Location: dashboard.php");
+  }
   exit;
 }
 
@@ -58,7 +58,7 @@ if ($pid) {
 
     <!-- ── Glass Card ─────────────────────────────── -->
     <div class="glass-card">
-
+    
       <?php if ($pid && $isTaken): ?>
         <!-- ── Warning: Product already registered ── -->
         <div class="warning-box" style="text-align: center; padding: 1.5rem 0;">

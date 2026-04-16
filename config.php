@@ -20,10 +20,15 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 /**
- * Utility function to calculate expiry date (3 months from now)
+ * Calculate all three maintenance/coverage expiry timestamps
  */
-function getExpiryDate()
+function calculateExpiries($regTimestamp = null)
 {
-    return date('Y-m-d', strtotime('+90 days')); // Always exactly 90 days
+    $start = $regTimestamp ?: time();
+    return [
+        'filter'   => date('Y-m-d H:i:s', $start + (90 * 86400)),
+        'service'  => date('Y-m-d H:i:s', $start + (365 * 86400)),
+        'warranty' => date('Y-m-d H:i:s', $start + (730 * 86400))
+    ];
 }
 ?>

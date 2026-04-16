@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     phone VARCHAR(20) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
+    role VARCHAR(20) DEFAULT 'user',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -16,8 +17,10 @@ CREATE TABLE IF NOT EXISTS warranties (
     user_id INT NOT NULL,
     product_id VARCHAR(50) NOT NULL UNIQUE,
     product_type VARCHAR(100) NOT NULL,
-    registration_date DATE NOT NULL,
-    expiry_date DATE NOT NULL,
+    registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    filter_expiry TIMESTAMP NULL,
+    service_expiry TIMESTAMP NULL,
+    warranty_expiry TIMESTAMP NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -27,6 +30,16 @@ CREATE TABLE IF NOT EXISTS products (
     product_type VARCHAR(100) NOT NULL UNIQUE,
     product_image VARCHAR(255),
     description TEXT
+);
+
+-- Service History Table
+CREATE TABLE IF NOT EXISTS service_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    warranty_id INT NOT NULL,
+    service_type ENUM('activation', 'filter', 'service', 'other') NOT NULL,
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (warranty_id) REFERENCES warranties(id) ON DELETE CASCADE
 );
 
 -- Initial Product Data
