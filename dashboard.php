@@ -159,8 +159,8 @@ foreach ($warranties as $w) {
         }
         .tech-val {
             font-size: 1rem;
-            font-weight: 900;
-            color: #fff;fv
+            /* font-weight: 00; */
+            color: #fff;
             text-align: right;
             letter-spacing: -0.01em;
         }
@@ -288,7 +288,7 @@ foreach ($warranties as $w) {
                         <div class="v-card-top">
                             <h3 class="v-card-title"><?php echo $m['title']; ?></h3>
                             <span class="status-pill <?php echo $m['data']['active'] ? '' : 'expired'; ?>">
-                                <?php echo $m['key']; ?> STATUS: <?php echo $m['data']['active'] ? 'ACTIVE' : 'EXPIRED'; ?>
+                                <?php echo $m['data']['active'] ? 'ACTIVE' : 'EXPIRED'; ?>
                             </span>
                         </div>
 
