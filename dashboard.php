@@ -66,6 +66,7 @@ foreach ($warranties as $w) {
         :root {
             --card-bg: #0f111a;
             --accent-green: #10b981;
+            --accent-blue: #0ea5e9;
             --accent-amber: #f59e0b;
             --accent-red: #ef4444;
             --text-dim: #64748b;
@@ -105,7 +106,7 @@ foreach ($warranties as $w) {
         .v-card-title {
             font-size: 1.1rem;
             font-weight: 800;
-            color: #10b981;
+            color: var(--accent-blue);
             letter-spacing: -0.01em;
         }
         .status-pill {
@@ -168,43 +169,37 @@ foreach ($warranties as $w) {
         /* ── Unit Identifier Overlay ── */
         .unit-indicator {
             text-align: center;
-            margin-top: 1rem;
-            margin-bottom: 2.5rem;
-            background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 28px;
-            padding: 2.5rem 1.5rem;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+            margin-top: 2rem;
+            margin-bottom: 3.5rem;
             position: relative;
-            overflow: hidden;
         }
-        .unit-indicator::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.5), transparent);
-        }
+
         .unit-badge {
-            background: rgba(16, 185, 129, 0.08);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            display: inline-block;
-            padding: 0.5rem 1.25rem;
-            border-radius: 100px;
-            font-size: 0.65rem;
-            font-weight: 800;
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.1);
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.2rem 3rem;
+            border-radius: 24px;
             color: #10b981;
             text-transform: uppercase;
-            letter-spacing: 0.15em;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
-        .unit-id-large {
-            font-size: 1.4rem;
-            font-weight: 900;
-            letter-spacing: 0.08em;
-            color: #fff;
-            margin-bottom: 1rem;
-            text-shadow: 0 10px 30px rgba(16, 185, 129, 0.15);
+        .unit-badge .label {
+            font-size: 0.75rem;
+            opacity: 0.5;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            margin-bottom: 0.2rem;
         }
+        .unit-badge .id {
+            font-size: 2rem;
+            font-weight: 950;
+            letter-spacing: 0.05em;
+            line-height: 1;
+        }
+
 
         /* ── Specs Card ── */
         .specs-header { font-size: 0.8rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.2em; margin: 4rem 0 1.5rem; padding-left: 0.5rem; border-left: 3px solid var(--accent-green); }
@@ -254,7 +249,7 @@ foreach ($warranties as $w) {
         </header>
 
         <section class="welcome-msg" data-animate="fade-in">
-            <h1>My Equipment Status</h1>
+            <!-- <h1>My Equipment Status</h1> -->
         </section>
 
         <?php if (empty($warranties)): ?>
@@ -273,12 +268,11 @@ foreach ($warranties as $w) {
             ?>
                 <!-- Unit Identity -->
                 <div class="unit-indicator" data-animate="slide-up">
-                    <span class="unit-badge">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="display:inline-block; vertical-align:-2px; margin-right:4px;"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
-                        Serial Number
-                    </span>
-                    <div class="unit-id-large"><?php echo htmlspecialchars($item['product_id']); ?></div>
-                    <div style="font-size: 0.75rem; color: #94a3b8; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">
+                    <div class="unit-badge">
+                        <span class="label">SERIAL NUMBER</span>
+                        <span class="id"><?php echo htmlspecialchars($item['product_id']); ?></span>
+                    </div>
+                    <div style="font-size: 0.8rem; color: #94a3b8; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">
                         2-Year Warranty <span style="color:var(--accent-green); margin:0 4px;">•</span> Exp <?php echo date('M d, Y', strtotime($warranty['expiry'])); ?>
                     </div>
                 </div>

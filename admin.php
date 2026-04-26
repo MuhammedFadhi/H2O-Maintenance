@@ -3,7 +3,7 @@ require_once 'config.php';
 
 // Security: Check admin role
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header("Location: index.php");
+    header("Location: admin_login.php");
     exit;
 }
 
@@ -101,7 +101,17 @@ try {
         .date-maint.due { color: var(--danger); font-weight: 700; }
         
         .action-btns { display: flex; gap: 0.5rem; }
-        .btn-action { width: 32px; height: 32px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .btn-action { 
+            width: 36px; height: 36px; 
+            border-radius: 10px; 
+            border: 1px solid rgba(255,255,255,0.08); 
+            background: rgba(255,255,255,0.03); 
+            cursor: pointer; 
+            display: flex; align-items: center; justify-content: center; 
+            transition: 0.2s; 
+            color: #94a3b8;
+        }
+        .btn-action svg { stroke-width: 2.5px; }
         .btn-action:hover { background: var(--primary); border-color: var(--primary); color: #000; transform: translateY(-2px); }
 
         /* ── Model Manager ── */
@@ -123,59 +133,75 @@ try {
         .add-model-card .label { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em; }
 
         /* ── Modals ── */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.88); backdrop-filter: blur(16px); z-index: 2000; display: none; align-items: center; justify-content: center; opacity: 0; padding: 1rem; }
-        .modal-content { background: #0d0f1c; border: 1px solid rgba(255,255,255,0.07); width: 100%; max-width: 500px; border-radius: 24px; padding: 2.5rem; box-shadow: 0 60px 120px rgba(0,0,0,1); max-height: 92vh; overflow-y: auto; }
-        .modal-content.large { max-width: 780px; padding: 0; overflow: hidden; }
+        .modal-overlay { 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0.92); 
+            backdrop-filter: blur(20px); 
+            z-index: 2000; 
+            display: none; 
+            justify-content: center; 
+            align-items: flex-start; 
+            overflow-y: auto; 
+            padding: 4rem 1rem; 
+            opacity: 0; 
+        }
+        .modal-content { 
+            background: #0d0f1c; 
+            border: 1px solid rgba(255,255,255,0.07); 
+            width: 100%; 
+            max-width: 500px; 
+            border-radius: 32px; 
+            padding: 2.5rem; 
+            box-shadow: 0 60px 120px rgba(0,0,0,1); 
+            position: relative;
+        }
+        .modal-content.large { max-width: 820px; padding: 0; overflow: hidden; }
 
         /* ── Client Modal Redesign ── */
         .client-modal-hero {
-            background: linear-gradient(135deg, #05080f 0%, #0d1629 50%, #0a1020 100%);
-            padding: 2rem 2rem 1.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
+            background: linear-gradient(165deg, #0f111a 0%, #0a0c16 100%);
+            padding: 2.5rem 2.5rem 1.75rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
             position: relative;
             overflow: hidden;
         }
         .client-modal-hero::before {
             content: '';
             position: absolute;
-            top: -60px; right: -60px;
-            width: 220px; height: 220px;
-            background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%);
+            top: -20%; right: -10%;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(14,165,233,0.1) 0%, transparent 70%);
             border-radius: 50%;
+            filter: blur(40px);
         }
-        .client-modal-hero::after {
-            content: '';
-            position: absolute;
-            bottom: -40px; left: 20px;
-            width: 150px; height: 150px;
-            background: radial-gradient(circle, rgba(6,182,212,0.07) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-        .client-hero-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; position: relative; z-index: 1; }
-        .client-hero-identity { display: flex; align-items: center; gap: 1rem; }
+        .client-hero-top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; position: relative; z-index: 1; }
+        .client-hero-identity { display: flex; align-items: center; gap: 1.25rem; }
         .client-avatar {
-            width: 52px; height: 52px;
-            background: linear-gradient(135deg, #10b981, #06b6d4);
-            border-radius: 16px;
+            width: 60px; height: 60px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 20px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.4rem;
-            box-shadow: 0 8px 24px rgba(16,185,129,0.3);
+            font-size: 1.6rem;
+            box-shadow: 0 10px 30px rgba(16,185,129,0.25);
             flex-shrink: 0;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
         }
         .client-phone-num {
-            font-size: 1.5rem;
-            font-weight: 800;
+            font-size: 1.75rem;
+            font-weight: 900;
             color: #fff;
-            letter-spacing: -0.02em;
-            line-height: 1.1;
+            letter-spacing: -0.03em;
+            line-height: 1;
         }
         .client-label {
-            font-size: 0.72rem;
-            color: #475569;
-            font-weight: 600;
-            letter-spacing: 0.08em;
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 700;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            margin-top: 2px;
+            margin-top: 4px;
         }
         .btn-close-modal {
             width: 36px; height: 36px;
@@ -192,186 +218,180 @@ try {
         .btn-close-modal:hover { background: rgba(244,63,94,0.15); border-color: rgba(244,63,94,0.4); color: #f43f5e; }
 
         /* Unit Tabs */
-        .unit-selector { display: flex; gap: 0.5rem; padding: 1.25rem 2rem 0; overflow-x: auto; scrollbar-width: none; }
-        .unit-selector::-webkit-scrollbar { display: none; }
+        .unit-selector { display: flex; gap: 0.75rem; padding: 1.5rem 2.5rem 0.5rem; overflow-x: auto; scrollbar-width: none; }
         .unit-tab {
             white-space: nowrap;
-            padding: 0.55rem 1.1rem;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 10px;
+            padding: 0.65rem 1.25rem;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 100px;
             cursor: pointer;
-            font-size: 0.72rem;
-            font-weight: 700;
-            color: #64748b;
-            transition: 0.2s;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #475569;
+            transition: 0.3s;
             letter-spacing: 0.05em;
         }
         .unit-tab.active {
-            background: rgba(16,185,129,0.12);
-            color: #10b981;
-            border-color: rgba(16,185,129,0.4);
+            background: rgba(14,165,233,0.1);
+            color: #0ea5e9;
+            border-color: rgba(14,165,233,0.3);
+            box-shadow: 0 0 15px rgba(14,165,233,0.1);
         }
 
         /* Profile Unit Card */
-        .profile-unit-card { display: none; padding: 1.5rem 2rem 2rem; }
+        .profile-unit-card { display: none; padding: 1rem 2.5rem 2.5rem; }
         .profile-unit-card.active { display: block; }
 
         /* Unit Info Bar */
         .unit-info-bar {
             display: flex;
             align-items: center;
-            gap: 1.25rem;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 1rem 1.25rem;
-            margin-bottom: 1.5rem;
+            gap: 1.5rem;
+            background: rgba(255,255,255,0.01);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 20px;
+            padding: 1.25rem;
+            margin-bottom: 2rem;
         }
         .unit-model-img {
-            width: 52px; height: 52px;
-            background: rgba(0,0,0,0.4);
-            border-radius: 12px;
+            width: 64px; height: 64px;
+            background: #000;
+            border-radius: 14px;
             border: 1px solid rgba(255,255,255,0.06);
             display: flex; align-items: center; justify-content: center;
             overflow: hidden;
-            flex-shrink: 0;
         }
-        .unit-model-img img { width: 44px; height: 44px; object-fit: contain; }
+        .unit-model-img img { width: 48px; height: 48px; object-fit: contain; }
         .unit-model-name {
-            font-size: 1rem;
-            font-weight: 800;
+            font-size: 1.1rem;
+            font-weight: 900;
             color: #fff;
-            letter-spacing: 0.03em;
+            letter-spacing: 0.02em;
         }
         .unit-model-sub {
-            font-size: 0.72rem;
-            color: #475569;
-            margin-top: 3px;
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 4px;
         }
         .unit-model-badge {
             margin-left: auto;
-            background: rgba(16,185,129,0.1);
+            background: rgba(16,185,129,0.08);
             color: #10b981;
-            border: 1px solid rgba(16,185,129,0.25);
-            border-radius: 8px;
-            font-size: 0.65rem;
-            font-weight: 800;
+            border: 1px solid rgba(16,185,129,0.15);
+            border-radius: 100px;
+            font-size: 0.6rem;
+            font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            padding: 4px 10px;
+            letter-spacing: 0.15em;
+            padding: 6px 14px;
         }
 
         /* Job Order Box */
         .job-order-box {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 16px;
-            padding: 1.25rem;
-            margin-bottom: 1.75rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 24px;
+            padding: 1.5rem;
+            margin-bottom: 2.5rem;
         }
         .job-order-label {
-            font-size: 0.65rem;
-            font-weight: 800;
+            font-size: 0.7rem;
+            font-weight: 850;
             text-transform: uppercase;
             letter-spacing: 0.15em;
             color: #10b981;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
         .job-order-label::before {
             content: '';
-            width: 3px; height: 12px;
+            width: 4px; height: 14px;
             background: #10b981;
-            border-radius: 4px;
+            border-radius: 10px;
             display: inline-block;
         }
         .job-order-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr auto;
-            gap: 0.75rem;
+            display: flex;
+            gap: 1rem;
             align-items: center;
         }
-        .job-order-grid select, .job-order-grid input {
-            background: rgba(0,0,0,0.5) !important;
-            border: 1px solid rgba(255,255,255,0.08) !important;
-            border-radius: 10px !important;
+        .job-order-grid select {
+            background: #000 !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            border-radius: 14px !important;
             color: #fff !important;
-            padding: 0.65rem 0.85rem !important;
-            font-size: 0.82rem !important;
-            transition: border-color 0.2s !important;
+            padding: 0.85rem 1rem !important;
+            font-size: 0.9rem !important;
+            outline: none !important;
+            flex-shrink: 0;
+        }
+        .job-order-grid input {
+            background: #000 !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            border-radius: 14px !important;
+            color: #fff !important;
+            padding: 0.85rem 1.25rem !important;
+            font-size: 0.9rem !important;
+            flex: 1;
             outline: none !important;
         }
-        .job-order-grid select:focus, .job-order-grid input:focus {
-            border-color: rgba(16,185,129,0.5) !important;
-            box-shadow: 0 0 0 3px rgba(16,185,129,0.08) !important;
-        }
         .btn-save-job {
-            background: linear-gradient(135deg, #10b981, #06b6d4);
-            border: none;
-            border-radius: 10px;
+            background: #10b981;
             color: #000;
-            font-weight: 800;
-            font-size: 0.8rem;
-            padding: 0.65rem 1.1rem;
+            border: none;
+            border-radius: 14px;
+            font-weight: 900;
+            font-size: 0.9rem;
+            padding: 0.85rem 1.75rem;
             cursor: pointer;
-            white-space: nowrap;
-            letter-spacing: 0.03em;
-            transition: 0.2s;
-            box-shadow: 0 4px 16px rgba(16,185,129,0.2);
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(16,185,129,0.2);
         }
-        .btn-save-job:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(16,185,129,0.35); }
+        .btn-save-job:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 15px 30px rgba(16,185,129,0.3); }
 
         /* Timeline */
         .timeline-section-label {
-            font-size: 0.65rem;
-            font-weight: 800;
+            font-size: 0.7rem;
+            font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 0.15em;
             color: #334155;
-            margin-bottom: 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
+            margin-bottom: 1.5rem;
         }
-        .timeline-section-label::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: rgba(255,255,255,0.04);
-        }
-        .timeline { position: relative; padding-left: 2.25rem; }
-        .timeline::before { content: ''; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, rgba(16,185,129,0.3), rgba(255,255,255,0.03)); border-radius: 2px; }
+        .timeline { position: relative; padding-left: 1.5rem; }
+        .timeline::before { content: ''; position: absolute; left: 0; top: 0.5rem; bottom: 0.5rem; width: 1px; background: rgba(255,255,255,0.05); }
         .timeline-item {
             position: relative;
-            margin-bottom: 1.25rem;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 14px;
-            padding: 1rem 1.1rem;
-            transition: 0.2s;
+            margin-bottom: 1rem;
+            background: #0f111a;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 18px;
+            padding: 1.25rem 1.5rem;
+            transition: 0.3s;
         }
-        .timeline-item:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); }
+        .timeline-item:hover { border-color: rgba(255,255,255,0.12); transform: translateX(4px); background: #131522; }
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -2.25rem;
-            top: 1rem;
-            width: 12px; height: 12px;
+            left: -1.5rem;
+            top: 1.75rem;
+            width: 7px; height: 7px;
             background: #1e293b;
-            border: 2px solid rgba(255,255,255,0.12);
             border-radius: 50%;
+            transform: translateX(-50%);
         }
-        .timeline-item.activation::before { background: #10b981; border-color: #10b981; box-shadow: 0 0 8px rgba(16,185,129,0.5); }
-        .timeline-item.filter::before { background: #06b6d4; border-color: #06b6d4; box-shadow: 0 0 8px rgba(6,182,212,0.4); }
-        .timeline-item.service::before { background: #8b5cf6; border-color: #8b5cf6; box-shadow: 0 0 8px rgba(139,92,246,0.4); }
-        .timeline-item.other::before { background: #f59e0b; border-color: #f59e0b; box-shadow: 0 0 8px rgba(245,158,11,0.4); }
-        .timeline-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem; }
-        .timeline-item h5 { font-size: 0.8rem; color: #e2e8f0; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
-        .timeline-item .date { font-size: 0.68rem; color: #475569; font-weight: 500; }
-        .timeline-item .notes { font-size: 0.8rem; color: #94a3b8; line-height: 1.55; background: rgba(0,0,0,0.25); padding: 0.65rem 0.85rem; border-radius: 8px; margin-top: 0.6rem; border-left: 2px solid rgba(255,255,255,0.06); }
+        .timeline-item.activation::before { background: #10b981; box-shadow: 0 0 10px rgba(16,185,129,0.4); }
+        .timeline-item.filter::before { background: #0ea5e9; box-shadow: 0 0 10px rgba(14,165,233,0.4); }
+        .timeline-item.service::before { background: #8b5cf6; box-shadow: 0 0 10px rgba(139,92,246,0.4); }
+        .timeline-item.other::before { background: #f59e0b; box-shadow: 0 0 10px rgba(245,158,11,0.4); }
+        
+        .timeline-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+        .timeline-item h5 { font-size: 0.85rem; color: #fff; font-weight: 850; letter-spacing: 0.02em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+        .timeline-item .date { font-size: 0.7rem; color: #475569; font-weight: 600; }
+        .timeline-item .notes { font-size: 0.9rem; color: #94a3b8; line-height: 1.6; background: rgba(255,255,255,0.02); padding: 0.85rem 1rem; border-radius: 12px; margin-top: 0.5rem; border: 1px solid rgba(255,255,255,0.03); }
 
         @media (max-width: 800px) { .stats-grid { grid-template-columns: 1fr; } .controls-bar { flex-direction: column; align-items: stretch; } .admin-header { flex-direction: column; gap: 2rem; } }
     </style>
@@ -468,7 +488,9 @@ try {
                                 </td>
                                 <td>
                                     <div class="action-btns">
-                                        <button class="btn-action" title="View Profile & Job History" onclick="viewClient(<?php echo $w['user_id']; ?>, '<?php echo $w['phone']; ?>', '<?php echo $w['product_id']; ?>')">👤</button>
+                                        <button class="btn-action" title="View Profile & Job History" onclick="viewClient(<?php echo $w['user_id']; ?>, '<?php echo $w['phone']; ?>', '<?php echo $w['product_id']; ?>')">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -507,7 +529,9 @@ try {
             <div class="client-modal-hero">
                 <div class="client-hero-top">
                     <div class="client-hero-identity">
-                        <div class="client-avatar">👤</div>
+                        <div class="client-avatar">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        </div>
                         <div>
                             <div id="client-phone-display" class="client-phone-num">+966...</div>
                             <div class="client-label">Client Service Profile & History</div>
@@ -531,9 +555,19 @@ try {
             <h2 id="model-modal-title" style="margin-bottom: 1.5rem;">Edit Model</h2>
             <input type="hidden" id="edit-product-id">
             <div class="form-group"><label>Model Identifier (e.g. a1)</label><input type="text" id="edit-product-type" placeholder="a1"></div>
-            <div class="form-group" style="display: flex; gap: 1rem; align-items: start;">
-                <div style="flex: 1;"><label>Image Source (URL / Path)</label><input type="text" id="edit-product-image" placeholder="assets/img/..." oninput="updateImagePreview(this.value)"></div>
-                <div id="model-image-preview" style="width: 80px; height: 80px; background: #000; border-radius: 12px; border: 1px solid var(--admin-border); display: flex; align-items: center; justify-content: center; overflow: hidden; margin-top: 1.6rem;"><img src="" style="max-width: 100%; max-height: 100%; object-fit: contain;"></div>
+            <div class="form-group" style="display: flex; gap: 1.5rem; align-items: flex-start;">
+                <div style="flex: 1;">
+                    <label>Product Image</label>
+                    <div style="position: relative; background: rgba(255,255,255,0.02); border: 1px solid var(--admin-border); border-radius: 12px; padding: 1rem; cursor: pointer; transition: 0.2s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--admin-border)'" onclick="document.getElementById('edit-product-file').click()">
+                        <div style="font-size: 0.8rem; color: #64748b; margin-bottom: 0.5rem;" id="file-label">Click to upload image...</div>
+                        <input type="file" id="edit-product-file" accept="image/*" style="display: none;" onchange="handleFileSelect(this)">
+                        <input type="hidden" id="edit-product-image"> <!-- Stores existing path if no new file -->
+                    </div>
+                </div>
+                <div id="model-image-preview" style="width: 100px; height: 100px; background: #000; border-radius: 16px; border: 1px solid var(--admin-border); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
+                    <img src="" style="max-width: 90%; max-height: 90%; object-fit: contain; display: none;">
+                    <div class="placeholder" style="color: #1e293b; font-size: 2rem;">🖼️</div>
+                </div>
             </div>
             <div class="form-group"><label>Public Description</label><textarea id="edit-product-desc" style="width: 100%; height: 100px; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 12px; color: #fff; padding: 1rem; font-family: inherit; font-size: 0.85rem; resize: none;"></textarea></div>
             <div style="display: flex; gap: 1rem; margin-top: 2rem;"><button class="btn btn-primary" onclick="saveModel()" style="flex: 2;">Save Model</button><button class="btn" onclick="closeModal('modal-model')" style="flex: 1;">Cancel</button></div>
@@ -616,7 +650,13 @@ try {
                 card.id = `unit-card-${u.id}`;
                 card.className = `profile-unit-card ${((autoSelectPid === u.product_id) || (!autoSelectPid && i === 0)) ? 'active' : ''}`;
                 
-                const typeLabel = { activation: '🚀 Activation', filter: '💧 Filter Change', service: '⚙️ RO Service', other: '🔧 General Maintenance' };
+                const typeLabel = { 
+                    activation: '🚀 ACTIVATION', 
+                    filter: '💧 FILTER CHANGE', 
+                    service: '⚙️ RO SERVICE', 
+                    other: '🔧 MAINTENANCE' 
+                };
+                
                 let historyHtml = u.history.map(h => `
                     <div class="timeline-item ${h.service_type}">
                         <div class="timeline-item-header">
@@ -635,9 +675,9 @@ try {
                         </div>
                         <div>
                             <div class="unit-model-name">MODEL: ${u.product_type.toUpperCase()}</div>
-                            <div class="unit-model-sub">Warranty Registered on ${new Date(u.registration_date).toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'})}</div>
+                            <div class="unit-model-sub">Unit successfully registered on ${new Date(u.registration_date).toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'})}</div>
                         </div>
-                        <div class="unit-model-badge">Active</div>
+                        <div class="unit-model-badge">Active Status</div>
                     </div>
 
                     <!-- Job Order Form -->
@@ -649,14 +689,14 @@ try {
                                 <option value="service" ${u.product_type === 'a1' ? '' : 'selected'}>⚙️ Annual RO Service</option>
                                 <option value="other">🔧 General Maintenance</option>
                             </select>
-                            <input type="text" id="job-notes-${u.id}" placeholder="Internal notes (optional)...">
+                            <input type="text" id="job-notes-${u.id}" placeholder="Enter internal service notes (optional)...">
                             <button class="btn-save-job" onclick="saveJobOrder(${u.id})">Save Job</button>
                         </div>
                     </div>
 
                     <!-- Timeline -->
-                    <div class="timeline-section-label">Service Timeline</div>
-                    <div class="timeline">${historyHtml || '<p style="color:#475569;font-size:0.82rem;text-align:center;padding:1.5rem 0;">No service history recorded yet.</p>'}</div>
+                    <div class="timeline-section-label">Service History Timeline</div>
+                    <div class="timeline">${historyHtml || '<p style="color:#475569;font-size:0.82rem;text-align:center;padding:2rem 0;background:rgba(255,255,255,0.01);border-radius:20px;border:1px dashed rgba(255,255,255,0.05);">No service records found for this unit.</p>'}</div>
                 `;
                 contentContainer.appendChild(card);
             });
@@ -688,6 +728,8 @@ try {
             document.getElementById('edit-product-id').value = p.id;
             document.getElementById('edit-product-type').value = p.product_type;
             document.getElementById('edit-product-image').value = p.product_image;
+            document.getElementById('edit-product-file').value = "";
+            document.getElementById('file-label').innerText = "Change image (optional)...";
             document.getElementById('edit-product-desc').value = p.description;
             updateImagePreview(p.product_image); openModal('modal-model');
         };
@@ -696,23 +738,55 @@ try {
             document.querySelector('#model-modal-title').innerText = "Add New Model";
             document.getElementById('edit-product-id').value = "";
             document.getElementById('edit-product-type').value = "";
-            document.getElementById('edit-product-image').value = "assets/img/";
+            document.getElementById('edit-product-image').value = "";
+            document.getElementById('edit-product-file').value = "";
+            document.getElementById('file-label').innerText = "Click to upload image...";
             document.getElementById('edit-product-desc').value = "";
             updateImagePreview(""); openModal('modal-model');
         };
 
-        const updateImagePreview = (url) => { const img = document.querySelector('#model-image-preview img'); img.src = url || ''; img.style.display = url ? 'block' : 'none'; };
+        const handleFileSelect = (input) => {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    updateImagePreview(e.target.result);
+                    document.getElementById('file-label').innerText = input.files[0].name;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        };
+
+        const updateImagePreview = (url) => { 
+            const img = document.querySelector('#model-image-preview img'); 
+            const placeholder = document.querySelector('#model-image-preview .placeholder');
+            if (url) {
+                img.src = url; img.style.display = 'block'; placeholder.style.display = 'none';
+            } else {
+                img.src = ''; img.style.display = 'none'; placeholder.style.display = 'block';
+            }
+        };
 
         const saveModel = async () => {
             const id = document.getElementById('edit-product-id').value;
+            const fileInput = document.getElementById('edit-product-file');
+            
             const fd = new FormData();
             fd.append('action', id ? 'admin_update_product' : 'admin_add_product');
             if (id) fd.append('id', id);
+            
             fd.append('type', document.getElementById('edit-product-type').value);
-            fd.append('image', document.getElementById('edit-product-image').value);
             fd.append('description', document.getElementById('edit-product-desc').value);
+            
+            if (fileInput.files.length > 0) {
+                fd.append('image_file', fileInput.files[0]);
+            } else {
+                fd.append('existing_image', document.getElementById('edit-product-image').value);
+            }
+
             const res = await fetch('auth.php', { method: 'POST', body: fd });
-            if ((await res.json()).success) location.reload();
+            const data = await res.json();
+            if (data.success) location.reload();
+            else alert(data.message);
         };
 
         const deleteModel = async (id, type) => {

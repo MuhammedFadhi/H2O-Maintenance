@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
             $_SESSION['user_id'] = $pdo->lastInsertId();
             $_SESSION['phone'] = $phone;
+            $_SESSION['role'] = 'user';
 
             echo json_encode(['success' => true, 'message' => 'Registration successful!']);
         } 
@@ -33,12 +34,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         else if ($action === 'login') {
             $phone = $_POST['phone'];
             $password = $_POST['password'];
+            $loginType = $_POST['login_type'] ?? 'user';
 
             $stmt = $pdo->prepare("SELECT * FROM users WHERE phone = ?");
             $stmt->execute([$phone]);
             $user = $stmt->fetch();
 
             if ($user && password_verify($password, $user['password'])) {
+                // Enforce separate login paths
+                if ($loginType === 'admin' && $user['role'] !== 'admin') {
+                    throw new Exception("This account does not have administrative privileges.");
+                }
+                if ($loginType === 'user' && $user['role'] === 'admin') {
+                    throw new Exception("Administrators must use the dedicated admin login page.");
+                }
+
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['phone'] = $user['phone'];
                 $_SESSION['role'] = $user['role'];
@@ -100,6 +110,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 throw new Exception("Unauthorized access.");
             }
 
+            // Helper for image uploads
+            $handleUpload = function($field) {
+                if (!isset($_FILES[$field]) || $_FILES[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+                    return null;
+                }
+                if ($_FILES[$field]['error'] !== UPLOAD_ERR_OK) {
+                    throw new Exception("Upload error code: " . $_FILES[$field]['error']);
+                }
+                
+                $ext = strtolower(pathinfo($_FILES[$field]['name'], PATHINFO_EXTENSION));
+                if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
+                    throw new Exception("Invalid image format.");
+                }
+
+                $filename = 'up_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+                $target = 'assets/img/' . $filename;
+                if (!move_uploaded_file($_FILES[$field]['tmp_name'], $target)) {
+                    throw new Exception("Failed to move uploaded file.");
+                }
+                return $target;
+            };
+
             if ($action === 'admin_add_job_order') {
                 $warrantyId = $_POST['warranty_id'];
                 $type = $_POST['type']; // 'filter', 'service', 'other'
@@ -147,8 +179,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
             else if ($action === 'admin_update_product') {
                 $pid = $_POST['id'];
-                $img = $_POST['image'];
                 $desc = $_POST['description'];
+                
+                // Handle image (new upload or keep existing)
+                $img = $handleUpload('image_file');
+                if (!$img) {
+                    $img = $_POST['existing_image'] ?? '';
+                }
 
                 $stmt = $pdo->prepare("UPDATE products SET product_image = ?, description = ? WHERE id = ?");
                 $stmt->execute([$img, $desc, $pid]);
@@ -157,8 +194,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             
             else if ($action === 'admin_add_product') {
                 $type = $_POST['type'];
-                $img = $_POST['image'];
                 $desc = $_POST['description'];
+                
+                $img = $handleUpload('image_file');
+                if (!$img) {
+                    $img = 'assets/img/h2o_purifier_b.png'; // Fallback
+                }
 
                 $stmt = $pdo->prepare("INSERT INTO products (product_type, product_image, description) VALUES (?, ?, ?)");
                 $stmt->execute([$type, $img, $desc]);
